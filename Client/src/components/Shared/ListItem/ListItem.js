@@ -2,20 +2,33 @@ import React from 'react';
 import {Row, Col} from 'react-bootstrap';
 
 const ListItem = (props) =>{
-
-    const toggleActive = (index, id) =>{
-        let e =  document.getElementById(index);
+    
+    const toggleActive = (index, id, uri) =>{
+        let e =  document.getElementById(index)  || document.getElementById(id) ;
         if(e.classList.contains("active")){
-            props.removeFromIdList(id);
-            e.classList.remove("active");
+            if(props.isUri){
+                props.removeFromIdList(uri);
+                e.classList.remove("active");
+            } else {
+                props.removeFromIdList(id);
+                e.classList.remove("active");
+            }
+        
         } else {
-            props.addToIdList(id);
-            e.classList.add("active");
+            if (props.isUri){
+                console.log("uri true");
+                props.addToIdList(uri);
+                e.classList.add("active");
+            } else {
+                props.addToIdList(id);
+                e.classList.add("active");
+            }
+            
         }
        
     }
     return (
-        <div className={`list-group-item list-group-item-action`}  action key={props.index} id={props.index} onClick={()=>{toggleActive(props.index, props.id)}} >
+        <div className={`list-group-item list-group-item-action`}  action key={props.index} id={props.id} onClick={()=>{toggleActive(props.index, props.id, props.uri)}} >
                         <Row>
                           <Col>
                               {props.name}

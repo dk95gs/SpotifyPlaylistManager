@@ -1,36 +1,54 @@
 import React , {useState} from 'react';
 import ListItem from '../../Shared/ListItem/ListItem';
 import axios from 'axios';
-import querystring from 'querystring';
+
 import ConfirmBox from '../../Shared/ConfirmBox/ConfirmBox';
 import {connect} from 'react-redux';
-import {
-    Modal,ListGroup, Row, Col, Button
-} from 'react-bootstrap';
+import { Modal,ListGroup, Button } from 'react-bootstrap';
 const PlaylistsModal = (props) =>{
  
-  let idList = [];
+
   const handleModalChange = () =>{
     props.handlePlaylistsModalClose();
     props.handleTrackListModalShow();
    
   }
-
-  const addToSelectedPlaylists = () =>{
-    let modedUri = props.trackUri;
-    let i = modedUri.indexOf("k:");
-     modedUri = modedUri.slice(i+2,modedUri.length);
-     console.log("dsa"+ props.idList);
-    for (let i = 0; i <= props.idList.length; i++) {
+  const sleep = (milliseconds) => {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+      currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
+  }
+  const addToSelectedPlaylists = async() =>{
+   
+     
+    //add timer to deplay the api requests to Spotify in order to prevent 500 error
+    for (let i = 0; i < props.idList.length; i++) {
 
       if(props.idList[i] !== undefined){
-        const url = `https://api.spotify.com/v1/playlists/${props.idList[i]}/tracks?uris=spotify%3Atrack%3A${modedUri}`;
-        
-        axios.post(url,{}, props.headers).then(res =>{
-          
-        }).catch((err)=>{console.log(err)});
+      
+        for(let x = 0; x < props.trackUri.length; x++){
+
+          if(props.trackUri[x] !== undefined){
+           
+            let modedUri = props.trackUri[x];
+            let num = modedUri.indexOf("k:");
+            modedUri = modedUri.slice(num+2,modedUri.length);
+
+            const url = `https://api.spotify.com/v1/playlists/${props.idList[i]}/tracks?uris=spotify%3Atrack%3A${modedUri}`;
+            
+            await axios.post(url,{}, props.headers).then(res =>{}).catch((err)=>{console.log(err)});
+            
+            }
+
+        }
+     
       }
+     
     }
+    console.log('second');
+    props.clearIdList();
     props.handleCloseConfirm();
     props.handlePlaylistsModalClose();
   }
