@@ -15,10 +15,10 @@ class Playlists extends Component  {
         this.state = {
             headers: {headers: {'Authorization': 'Bearer ' + cookie.load("access_token") }},
             playlistName: "",
-            trackUrl: "",
+            trackUrl: [],
             tracks: [],
             totalTracks: 0,
-            trackUri: "nan",
+            trackUri: [],
             show: false,
             showPlaylistModal: false,
             paginationItems:[],
@@ -29,6 +29,9 @@ class Playlists extends Component  {
         
         cookie.save("path", "test");
         
+    }
+    clearIdList = () =>{
+      this.setState({idList:[]});
     }
      addToIdList = (id) =>{
         let tempArr = [...this.state.idList,id];
@@ -51,13 +54,13 @@ class Playlists extends Component  {
 
     loadNextPage = (number) => {
       let temp = (number * 100) - 100;
-      this.getPlaylistTracks(this.state.trackUrl, this.state.playlistName, number);
+      this.getPlaylistTracks(this.state.trackUrl, this.state.playlistName, temp);
       this.setState({
           active:number
       });
     }
     handlePagination = () =>{
-      console.log(this.state.totalTracks);
+
       this.setState({
         paginationItems: []
       });
@@ -158,6 +161,7 @@ class Playlists extends Component  {
                       addToIdList={this.addToIdList}
                       removeFromIdList={this.removeFromIdList}
                       idList = {this.state.idList}
+                      clearIdList = {this.clearIdList}
                     />
                     
                 </div>
