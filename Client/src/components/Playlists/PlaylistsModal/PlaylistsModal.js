@@ -7,22 +7,16 @@ import {connect} from 'react-redux';
 import { Modal,ListGroup, Button } from 'react-bootstrap';
 const PlaylistsModal = (props) =>{
  
+  let [isLoading, setLoading] = useState(false);
 
   const handleModalChange = () =>{
     props.handlePlaylistsModalClose();
     props.handleTrackListModalShow();
    
   }
-  const sleep = (milliseconds) => {
-    const date = Date.now();
-    let currentDate = null;
-    do {
-      currentDate = Date.now();
-    } while (currentDate - date < milliseconds);
-  }
   const addToSelectedPlaylists = async() =>{
    
-     
+    setLoading(isLoading = true);
     //add timer to deplay the api requests to Spotify in order to prevent 500 error
     for (let i = 0; i < props.idList.length; i++) {
 
@@ -39,15 +33,11 @@ const PlaylistsModal = (props) =>{
             const url = `https://api.spotify.com/v1/playlists/${props.idList[i]}/tracks?uris=spotify%3Atrack%3A${modedUri}`;
             
             await axios.post(url,{}, props.headers).then(res =>{}).catch((err)=>{console.log(err)});
-            
             }
-
-        }
-     
+        }    
       }
-     
     }
-    console.log('second');
+    setLoading(isLoading = false)
     props.clearIdList();
     props.handleCloseConfirm();
     props.handlePlaylistsModalClose();
@@ -79,6 +69,7 @@ const PlaylistsModal = (props) =>{
                       handleConfirm={addToSelectedPlaylists}
                       modalTitle="Are you sure you want to add to these playlists?"
                       cancelBtnShow={true}
+                      isLoading={isLoading}
                     />
         </div>
     );
