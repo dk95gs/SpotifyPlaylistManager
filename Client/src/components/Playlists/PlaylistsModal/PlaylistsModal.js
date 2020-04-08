@@ -1,10 +1,10 @@
 import React , {useState} from 'react';
-import ListItem from '../../Shared/ListItem/ListItem';
-import axios from 'axios';
-
-import ConfirmBox from '../../Shared/ConfirmBox/ConfirmBox';
 import {connect} from 'react-redux';
 import { Modal,ListGroup, Button } from 'react-bootstrap';
+import axios from 'axios';
+import ListItem from '../../Shared/ListItem/ListItem';
+import ConfirmBox from '../../Shared/ConfirmBox/ConfirmBox';
+
 const PlaylistsModal = (props) =>{
  
   let [isLoading, setLoading] = useState(false);

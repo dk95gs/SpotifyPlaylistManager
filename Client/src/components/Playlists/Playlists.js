@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 import cookie from 'react-cookies';
 import axios from 'axios';
-import {Button, Container, Row, Col, Card,Pagination} from 'react-bootstrap';
+import {connect} from 'react-redux';
+import {Button,Pagination} from 'react-bootstrap';
 import PlaylistCard from './PlaylistCard/PlaylistCard';
 import TrackListModal from './TrackListModal/TrackListModal';
-import './playlists.css';
 import PlaylistsModal from './PlaylistsModal/PlaylistsModal';
-import {connect} from 'react-redux';
 import {SET_PLAYLIST, SORT_PLAYLIST_ALL, SORT_PLAYLIST_OWNED} from  '../../redux/actions/playlistActions';
+import './playlists.css';
 
 class Playlists extends Component  {
     constructor(props){
@@ -26,8 +26,6 @@ class Playlists extends Component  {
             showConfirm: false,
             idList:[]
         }
-        
-        cookie.save("path", "test");
         
     }
     clearIdList = () =>{
@@ -52,61 +50,93 @@ class Playlists extends Component  {
     handlePlaylistsModalClose = () => this.setState({showPlaylistModal: false});
     handlePlaylistsModalShow = () => this.setState({showPlaylistModal: true});
 
-    loadNextPage = (number) => {
-      let temp = (number * 100) - 100;
-      this.getPlaylistTracks(this.state.trackUrl, this.state.playlistName, temp);
-      this.setState({
-          active:number
-      });
-    }
-    handlePagination = () =>{
+    // loadNextPage = (number) => {
+    //   console.log(number);
+    //   let temp = (number * 100) - 100;
+    //   this.getPlaylistTracks(this.state.trackUrl, this.state.playlistName, temp);
+    //   this.setState({
+    //       active:number
+    //   });
+    // }
+    // handlePagination = () =>{
 
-      this.setState({
-        paginationItems: []
-      });
-      if(this.state.totalTracks > 100){
-          let temp = this.state.totalTracks / 100;
+    //   this.setState({
+    //     paginationItems: []
+    //   });
+    //   if(this.state.totalTracks > 100){
+    //       let temp = this.state.totalTracks / 100;
           
-          if(temp > 1){
-            for (let number = 1; number <= Math.ceil(temp); number++) {
-             this.setState({
-                paginationItems: [...this.state.paginationItems, 
-                <Pagination.Item key={number} active={number === this.state.active} onClick={()=>{this.loadNextPage(number)}}>
-                  {number}
-                </Pagination.Item>]
-             });
-            }
-          }
-          temp = 0;
-      }
-    }
-    getTotalTracks = (url)=>{
-      axios.get(url + "?fields=total", this.state.headers).then(res=>{
+    //       if(temp > 1){
+    //         for (let number = 1; number <= Math.ceil(temp); number++) {
+    //          this.setState({
+    //             paginationItems: [...this.state.paginationItems, 
+    //             <Pagination.Item key={number} active={number === this.state.active} onClick={()=>{this.loadNextPage(number)}}>
+    //               {number}
+    //             </Pagination.Item>]
+    //          });
+    //         }
+    //       }
+    //       temp = 0;
+    //   }
+    // }
+   
+    // getPlaylistTracks = (url, playlistName, offset) =>{
+    //         this.setState({
+    //           playlistName: playlistName
+    //         });
+            
+    //         axios.get(url +"/?offset=" + offset, this.state.headers).then(res=>{
+    //             this.setState({
+    //               tracks: res.data.items,
+    //               trackUrl: url
+    //             }); 
+    //             this.getTotalTracks(url);  
+    //             this.handleShow();
+    //         }).catch(err=>{
+    //             console.log(err);
+    //         });
+    // }
+    getTotalTracks = async(url)=>{
+      await axios.get(url + "?fields=total", this.state.headers).then(res=>{
           this.setState({
             totalTracks: res.data.total
           })
           
-          this.handlePagination();
+         // this.handlePagination();
       }).catch(err=>{
           console.log(err);
       });
     }
-    getPlaylistTracks = (url, playlistName, offset) =>{
-            this.setState({
-              playlistName: playlistName
-            });
-            
-            axios.get(url +"/?offset=" + offset, this.state.headers).then(res=>{
-                this.setState({
-                  tracks: res.data.items,
-                  trackUrl: url
-                }); 
-                console.log(this.state.tracks);
-                this.getTotalTracks(url);  
-                this.handleShow();
-            }).catch(err=>{
-                console.log(err);
-            });
+    getPlaylistTracks = async(url, playlistName, test) =>{
+        this.setState({
+          playlistName: playlistName
+        });
+
+        await this.getTotalTracks(url);  
+        let subAmount = this.state.totalTracks;
+        let loopTimes = Math.ceil(this.state.totalTracks / 100);
+        let offset = this.state.totalTracks - (subAmount);
+        for (let i = 0; i < loopTimes; i++) {
+            console.log(`offset: ${offset}`);
+            console.log(`subamount: ${subAmount}`)
+           
+            await axios.get(url +"/?offset=" + offset, this.state.headers).then(res=>{
+              this.setState({
+                tracks: this.state.tracks.length <= 0 ? res.data.items : this.state.tracks.concat(res.data.items),
+                trackUrl: url
+              }); 
+              
+             
+          }).catch(err=>{
+              console.log(err);
+          });
+          
+            subAmount = subAmount - 100;
+            offset = this.state.totalTracks - subAmount;
+        }
+       
+        this.handleShow();
+
     }
     updateTrackUri = (uri) =>{
       this.setState({

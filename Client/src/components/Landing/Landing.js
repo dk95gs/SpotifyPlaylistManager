@@ -1,8 +1,7 @@
 import React from 'react';
 import {Button} from 'react-bootstrap';
-import axios from 'axios';
-import {CheckIfLoggedIn, CheckLoginExpired, Login, GetToken,RefreshToken} from '../../Utility/AuthUtil';
-import Playlists from '../Playlists/Playlists';
+import {CheckIfLoggedIn, Login, GetToken,RefreshToken} from '../../Utility/AuthUtil';
+
 const Landing = () => {
 
     GetToken();
