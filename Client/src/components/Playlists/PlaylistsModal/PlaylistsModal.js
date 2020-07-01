@@ -6,7 +6,6 @@ import ListItem from '../../Shared/ListItem/ListItem';
 import ConfirmBox from '../../Shared/ConfirmBox/ConfirmBox';
 
 const PlaylistsModal = (props) =>{
- 
   let [isLoading, setLoading] = useState(false);
 
   const handleModalChange = () =>{
@@ -15,7 +14,9 @@ const PlaylistsModal = (props) =>{
    
   }
   const addToSelectedPlaylists = async() =>{
-   
+    // check if playlist contains song - returns true or false
+    
+    //  https://api.spotify.com/v1/users/{user_id}/playlists/{playlist_id}/tracks/contains?ids={ids}
     setLoading(isLoading = true);
     //add timer to deplay the api requests to Spotify in order to prevent 500 error
     for (let i = 0; i < props.idList.length; i++) {

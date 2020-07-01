@@ -34,6 +34,7 @@ class Playlists extends Component  {
      addToIdList = (id) =>{
         let tempArr = [...this.state.idList,id];
         this.setState({idList:tempArr});  
+       
     }
     removeFromIdList =(id)=>{
       let index = this.state.idList.indexOf(id);
@@ -117,9 +118,7 @@ class Playlists extends Component  {
         let loopTimes = Math.ceil(this.state.totalTracks / 100);
         let offset = this.state.totalTracks - (subAmount);
         for (let i = 0; i < loopTimes; i++) {
-            console.log(`offset: ${offset}`);
-            console.log(`subamount: ${subAmount}`)
-           
+            
             await axios.get(url +"/?offset=" + offset, this.state.headers).then(res=>{
               this.setState({
                 tracks: this.state.tracks.length <= 0 ? res.data.items : this.state.tracks.concat(res.data.items),
