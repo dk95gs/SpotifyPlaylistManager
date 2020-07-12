@@ -32,7 +32,7 @@ export function Login() {
 
         window.location.replace(url);
     */
-   const url = "http://localhost:8080/login";
+   const url = "https://spmserver.herokuapp.com/login";
 
     window.location.replace(url);
 }
