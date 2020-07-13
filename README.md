@@ -1,4 +1,4 @@
-# Spotify Playlist Manager - React-Redux-Node.js
+h# Spotify Playlist Manager - React-Redux-Node.js
 ## https://spotify-playlist-manager.vercel.app/
 An application that allows for easier managment of your Spotify playlists.
 
