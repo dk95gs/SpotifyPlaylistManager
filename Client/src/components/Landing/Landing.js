@@ -21,7 +21,7 @@ const Landing = () => {
                 CheckIfLoggedIn() ?
                 <div>
                     <h1>You have logged in!</h1>
-                    <Button onClick={RefreshToken}>dasdsa</Button>    
+               
                 </div> : 
                 <Button onClick={Login}>Login Through Spotify </Button>
             }
