@@ -110,9 +110,9 @@ class Playlists extends Component  {
     }
     getPlaylistTracks = async(url, playlistName, test) =>{
         this.setState({
-          playlistName: playlistName
+          playlistName: playlistName,
+          tracks: []
         });
-
         await this.getTotalTracks(url);  
         let subAmount = this.state.totalTracks;
         let loopTimes = Math.ceil(this.state.totalTracks / 100);
